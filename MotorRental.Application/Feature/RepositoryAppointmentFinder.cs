@@ -30,12 +30,21 @@ namespace MotorRental.UseCase.Feature
             // get appointment
             var res = await _appointmentRepository.GetAllAsync(userId, role, creteriasProcessed, sortBy);
 
+            foreach( var item in res )
+            {
+                item.Surcharges = (ICollection<Surcharge>?)await _appointmentRepository.getSurcharges(item.Id);
+            }
+
             // get surcharge
 
             return res;
         }
 
-        
+        public async Task<object> GetSpecificAppointment(Guid appointmentId)
+        {
+            var res = await _appointmentRepository.GetInformation(appointmentId);
 
+            return res;
+        }
     }
 }

@@ -12,6 +12,7 @@ using MotorRental.Infrastructure.SqlServer.Repository;
 using MotorRental.UseCase;
 using MotorRental.UseCase.Feature;
 using MotorRental.UseCase.Repository;
+using MotorRental.UseCase.Statistical;
 using MotorRental.UseCase.UnitOfWork;
 using Stripe;
 
@@ -55,6 +56,9 @@ namespace MotorRental.Infrastructure.Presentation
             builder.Services.AddTransient<IAppointmentRepository>(services =>
             new AppointmentRepository(services.GetRequiredService<ApplicationDbContext>()));
 
+            builder.Services.AddTransient<IStatisticRepository>(services =>
+           new StatisticRepository(services.GetRequiredService<ApplicationDbContext>()));
+
             //
 
             builder.Services.AddTransient<IMotorbikeStateManager>(services =>
@@ -71,9 +75,14 @@ namespace MotorRental.Infrastructure.Presentation
             builder.Services.AddTransient<IAppointmentFinder>(services =>
             new RepositoryAppointmentFinder(services.GetRequiredService<IAppointmentRepository>()));
 
+            builder.Services.AddTransient<ICompanyFinder>(services =>
+           new RepositoryCompanyFinder(services.GetRequiredService<ICompanyRepository>()));
+
+            builder.Services.AddTransient<IOrderStatistics>(services =>
+           new OrderStatistics(services.GetRequiredService<IStatisticRepository>()));
             //
 
-            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddTransient<IAuthService, AuthService>();
 
             
 

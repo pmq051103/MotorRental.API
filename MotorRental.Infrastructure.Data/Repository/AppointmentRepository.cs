@@ -168,6 +168,30 @@ namespace MotorRental.Infrastructure.SqlServer.Repository
             }
             return null;
         }
+
+
+        public async Task<IEnumerable<Surcharge>> getSurcharges(Guid appointmentId)
+        {
+            return await _db.Surcharges.Where(u =>  u.Appointment.Id == appointmentId).ToListAsync();
+        }
+
+        public async Task<object> GetInformation(Guid appointmentId)
+        {
+            var res = await _db.Appointments.Include(u => u.Motorbike)
+                                        .Include(u => u.Customer)
+                                        .Select(x => new {
+                                            Id = x.Id,
+                                            CustomerName = x.Customer.Name,
+                                            RentalBegin = x.RentalBegin.ToString("yyyy-MM-dd"),
+                                            RentalEnd = x.RentalEnd.ToString("yyyy-MM-dd"),
+                                            MotorbikeName = x.Motorbike.Name,
+                                            LicensePlate = x.Motorbike.LicensePlate
+                                        })
+                .FirstOrDefaultAsync(u => u.Id == appointmentId);
+
+            return res;
+                                        
+        }
         #endregion
 
         #region update
@@ -230,6 +254,9 @@ namespace MotorRental.Infrastructure.SqlServer.Repository
 
             return existingAppointment;
         }
+
+        
+
         #endregion
     }
 }
